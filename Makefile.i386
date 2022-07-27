@@ -1,3 +1,8 @@
+# 32-bit SDL and zlib libraries HACK:
+#
+# cd /usr/lib/i386-linux-gnu/
+# sudo ln -s libSDL-1.2.so.0 libSDL.so
+# sudo ln -s libz.so.1 libz.so
 
 SDL_CFLAGS = `sdl-config --cflags`
 SDL_LIBS = -L/usr/lib/i386-linux-gnu -lSDL
