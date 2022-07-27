@@ -1,5 +1,6 @@
 # Build results
 *.o
+*.d
 *.ezx
 *.dge
 *.exe
