@@ -252,10 +252,11 @@ void SDLStub::processEvents() {
 			case SDLK_PLUS:
 				_pi.button = true;
 				break;
-			case SDLK_PAUSE:
+			case SDLK_SPACE:
 			case SDLK_r:
 				_pi.code = true;
 				break;
+			case SDLK_PAUSE:
 			case SDLK_p:
 				_pi.pause = true;
 				break;
