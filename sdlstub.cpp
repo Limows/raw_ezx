@@ -247,8 +247,13 @@ void SDLStub::startAudio(AudioCallback callback, void *param) {
 
 	desired.freq = SOUND_SAMPLE_RATE;
 	desired.format = AUDIO_S8;
-	desired.channels = 1;
-	desired.samples = 2048;
+	#ifdef EZX
+		desired.channels = 2;
+		desired.samples = 512;
+	#else
+		desired.channels = 1;
+		desired.samples = 2048;
+	#endif
 	desired.callback = callback;
 	desired.userdata = param;
 	if (SDL_OpenAudio(&desired, NULL) == 0) {
