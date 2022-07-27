@@ -2,7 +2,7 @@
 *.o
 *.d
 raw
-raw.i386
+raw.x86
 raw.ezx
 raw.magz
 

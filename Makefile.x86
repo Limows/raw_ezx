@@ -10,7 +10,7 @@ SDL_LIBS = -L/usr/lib/i386-linux-gnu -lSDL
 DEFINES := -DSYS_LITTLE_ENDIAN
 # DEFINES += -DEZX
 
-TARGET = raw.i386
+TARGET = raw.x86
 
 CXX = g++ -m32 -std=c++03
 STRIP = strip
