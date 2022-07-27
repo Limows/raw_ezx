@@ -49,6 +49,7 @@ struct SDLStub : SystemStub {
 	bool _fullscreen;
 	uint8 _scaler;
 	bool _stretch240;
+	bool _disableAudio;
 	uint16 _pal[16];
 
 	virtual ~SDLStub() {}
@@ -107,6 +108,7 @@ void SDLStub::init(const char *title) {
 	_scaler = 1;
 #endif
 	_stretch240 = true;
+	_disableAudio = false;
 	prepareGfxMode();
 }
 
@@ -220,6 +222,15 @@ void SDLStub::processEvents() {
 #endif
 			_pi.lastChar = ev.key.keysym.sym;
 			switch(ev.key.keysym.sym) {
+			case SDLK_f:
+				if (_disableAudio) {
+					_disableAudio = false;
+					SDL_PauseAudio(_disableAudio);
+				} else {
+					_disableAudio = true;
+					SDL_PauseAudio(_disableAudio);
+				}
+				break;
 			case SDLK_c:
 			case SDLK_q:
 				_pi.load = true;
@@ -247,7 +258,6 @@ void SDLStub::processEvents() {
 			case SDLK_DOWN:
 				_pi.dirMask |= PlayerInput::DIR_DOWN;
 				break;
-			case SDLK_SPACE:
 			case SDLK_RETURN:
 			case SDLK_PLUS:
 				_pi.button = true;
