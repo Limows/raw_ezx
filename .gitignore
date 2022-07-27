@@ -23,3 +23,8 @@ MEMLIST.BIN
 
 # Save files
 *.DAT
+
+raw
+raw.i386
+raw.ezx
+raw.magz
