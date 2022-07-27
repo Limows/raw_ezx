@@ -83,19 +83,12 @@ SystemStub *SystemStub_SDL_create() {
 }
 
 void SDLStub::init(const char *title) {
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	SDL_ShowCursor(SDL_DISABLE);
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	SDL_WM_SetCaption(title, NULL);
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	memset(&_pi, 0, sizeof(_pi));
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	_offscreen = (uint8 *)malloc(SCREEN_W * SCREEN_H * 2);
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	if (!_offscreen) {
 		error("Unable to allocate offscreen buffer");
 	}
@@ -105,9 +98,7 @@ void SDLStub::init(const char *title) {
 #else
 	_scaler = 1;
 #endif
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	prepareGfxMode();
-	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 }
 
 void SDLStub::destroy() {
