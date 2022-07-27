@@ -158,6 +158,7 @@ void SDLStub::processEvents() {
 				_pi.dirMask &= ~PlayerInput::DIR_RIGHT;
 				break;
 			case SDLK_UP:
+			case SDLK_MINUS:
 				_pi.dirMask &= ~PlayerInput::DIR_UP;
 				break;
 			case SDLK_DOWN:
@@ -165,6 +166,7 @@ void SDLStub::processEvents() {
 				break;
 			case SDLK_SPACE:
 			case SDLK_RETURN:
+			case SDLK_PLUS:
 				_pi.button = false;
 				break;
 			default:
@@ -172,6 +174,7 @@ void SDLStub::processEvents() {
 			}
 			break;
 		case SDL_KEYDOWN:
+#ifndef EZX
 			if (ev.key.keysym.mod & KMOD_ALT) {
 				if (ev.key.keysym.sym == SDLK_RETURN) {
 					switchGfxMode(!_fullscreen, _scaler);
@@ -203,8 +206,23 @@ void SDLStub::processEvents() {
 				}
 				break;
 			}
+#endif
 			_pi.lastChar = ev.key.keysym.sym;
 			switch(ev.key.keysym.sym) {
+			case SDLK_c:
+			case SDLK_q:
+				_pi.load = true;
+				break;
+			case SDLK_d:
+			case SDLK_o:
+				_pi.save = true;
+				break;
+			case SDLK_ESCAPE:
+				_pi.quit = true;
+				break;
+			case SDLK_e:
+				_pi.fastMode = true;
+				break;
 			case SDLK_LEFT:
 				_pi.dirMask |= PlayerInput::DIR_LEFT;
 				break;
@@ -212,6 +230,7 @@ void SDLStub::processEvents() {
 				_pi.dirMask |= PlayerInput::DIR_RIGHT;
 				break;
 			case SDLK_UP:
+			case SDLK_MINUS:
 				_pi.dirMask |= PlayerInput::DIR_UP;
 				break;
 			case SDLK_DOWN:
@@ -219,9 +238,11 @@ void SDLStub::processEvents() {
 				break;
 			case SDLK_SPACE:
 			case SDLK_RETURN:
+			case SDLK_PLUS:
 				_pi.button = true;
 				break;
-			case SDLK_c:
+			case SDLK_PAUSE:
+			case SDLK_r:
 				_pi.code = true;
 				break;
 			case SDLK_p:
