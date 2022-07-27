@@ -93,7 +93,11 @@ void SDLStub::init(const char *title) {
 		error("Unable to allocate offscreen buffer");
 	}
 	_fullscreen = false;
+#ifdef EZX
+	_scaler = 0;
+#else
 	_scaler = 1;
+#endif
 	prepareGfxMode();
 }
 
