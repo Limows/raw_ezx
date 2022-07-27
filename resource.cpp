@@ -157,7 +157,6 @@ void Resource::update(uint16 num) {
 }
 
 void Resource::setupPtrs(uint16 ptrId) {
-	fprintf(stderr, "Enter address: 0x%X!\n", ptrId);
 	if (ptrId != _curPtrsId) {
 		uint8 ipal = 0;
 		uint8 icod = 0;
