@@ -1,10 +1,10 @@
 # Build results
 *.o
 *.d
-*.ezx
-*.dge
-*.exe
-*.elf
+raw
+raw.i386
+raw.ezx
+raw.magz
 
 # Libraries
 *.dll
@@ -15,7 +15,6 @@
 *.tar.gz
 *.deb
 *.rpm
-*.hpkg
 
 # Data files.
 BANK*
@@ -23,8 +22,3 @@ MEMLIST.BIN
 
 # Save files
 *.DAT
-
-raw
-raw.i386
-raw.ezx
-raw.magz
