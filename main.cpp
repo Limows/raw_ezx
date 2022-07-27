@@ -20,6 +20,9 @@
 #include "systemstub.h"
 #include "util.h"
 
+#ifdef EZX
+#include <SDL/SDL.h>
+#endif
 
 static const char *USAGE = 
 	"Raw - Another World Interpreter\n"
@@ -38,7 +41,9 @@ static bool parseOption(const char *arg, const char *longCmd, const char **opt) 
 	return ret;
 }
 
+#ifndef EZX
 #undef main
+#endif
 int main(int argc, char *argv[]) {
 	const char *dataPath = ".";
 	const char *savePath = ".";
