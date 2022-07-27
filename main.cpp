@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 			return 0;
 		}
 	}
-	g_debugMask = DBG_INFO; // DBG_LOGIC | DBG_BANK | DBG_VIDEO | DBG_SER | DBG_SND
+	g_debugMask = DBG_INFO | DBG_LOGIC | DBG_BANK | DBG_VIDEO | DBG_SER | DBG_SND;
 	SystemStub *stub = SystemStub_SDL_create();
 	Engine *e = new Engine(stub, dataPath, savePath);
 	e->run();
