@@ -26,10 +26,11 @@ struct SDLStub : SystemStub {
 
 	enum {
 		SCREEN_W = 320,
-		SCREEN_H = 200,
 #ifndef EZX
+		SCREEN_H = 200,
 		SOUND_SAMPLE_RATE = 22050
 #else
+		SCREEN_H = 240,
 		SOUND_SAMPLE_RATE = 44100
 #endif
 	};
@@ -47,6 +48,7 @@ struct SDLStub : SystemStub {
 	SDL_Surface *_sclscreen;
 	bool _fullscreen;
 	uint8 _scaler;
+	bool _stretch240;
 	uint16 _pal[16];
 
 	virtual ~SDLStub() {}
@@ -74,6 +76,8 @@ struct SDLStub : SystemStub {
 	void point1x(uint16 *dst, uint16 dstPitch, const uint16 *src, uint16 srcPitch, uint16 w, uint16 h);
 	void point2x(uint16 *dst, uint16 dstPitch, const uint16 *src, uint16 srcPitch, uint16 w, uint16 h);
 	void point3x(uint16 *dst, uint16 dstPitch, const uint16 *src, uint16 srcPitch, uint16 w, uint16 h);
+
+	void Stretch240(void);
 };
 
 const SDLStub::Scaler SDLStub::_scalers[] = {
@@ -102,6 +106,7 @@ void SDLStub::init(const char *title) {
 #else
 	_scaler = 1;
 #endif
+	_stretch240 = true;
 	prepareGfxMode();
 }
 
@@ -138,7 +143,13 @@ void SDLStub::copyRect(uint16 x, uint16 y, uint16 w, uint16 h, const uint8 *buf,
 	SDL_LockSurface(_sclscreen);
 	(this->*_scalers[_scaler].proc)((uint16 *)_sclscreen->pixels, _sclscreen->pitch, (uint16 *)_offscreen, SCREEN_W, SCREEN_W, SCREEN_H);
 	SDL_UnlockSurface(_sclscreen);
-	SDL_BlitSurface(_sclscreen, NULL, _screen, NULL);
+	if (_stretch240) {
+		SDL_Rect dest;
+		SDL_BlitSurface(_sclscreen, NULL, _screen, &dest);
+		Stretch240();
+	} else {
+		SDL_BlitSurface(_sclscreen, NULL, _screen, NULL);
+	}
 	SDL_UpdateRect(_screen, 0, 0, 0, 0);
 }
 
@@ -318,7 +329,11 @@ void SDLStub::unlockMutex(void *mutex) {
 void SDLStub::prepareGfxMode() {
 	int w = SCREEN_W * _scalers[_scaler].factor;
 	int h = SCREEN_H * _scalers[_scaler].factor;
+#ifdef EZX
+	_screen = SDL_SetVideoMode(w, h, 16, SDL_FULLSCREEN | SDL_HWSURFACE);
+#else
 	_screen = SDL_SetVideoMode(w, h, 16, _fullscreen ? (SDL_FULLSCREEN | SDL_HWSURFACE) : SDL_HWSURFACE);
+#endif
 	if (!_screen) {
 		error("SDLStub::prepareGfxMode() unable to allocate _screen buffer");
 	}
@@ -401,4 +416,21 @@ void SDLStub::point3x(uint16 *dst, uint16 dstPitch, const uint16 *src, uint16 sr
 		dst += dstPitch * 3;
 		src += srcPitch;
 	}
+}
+
+void SDLStub::Stretch240(void) {
+	SDL_Rect src;
+	SDL_Rect dest;
+
+	src.x = 0;
+	src.y = 0;
+	src.w = 320;
+	src.h = 200;
+
+	dest.x = 0;
+	dest.y = 0;
+	dest.w = 320;
+	dest.h = 240;
+
+	SDL_SoftStretch(_sclscreen, &src, _screen, &dest);
 }
