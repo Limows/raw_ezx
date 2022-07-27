@@ -4,7 +4,7 @@
 raw
 raw.x86
 raw.ezx
-raw.magz
+raw.magx
 
 # Libraries
 *.dll
@@ -17,8 +17,9 @@ raw.magz
 *.rpm
 
 # Data files.
+ANOTHER/*
 BANK*
 MEMLIST.BIN
 
 # Save files
-*.DAT
+*.s0*
