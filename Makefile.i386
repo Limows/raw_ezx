@@ -7,9 +7,12 @@
 SDL_CFLAGS = `sdl-config --cflags`
 SDL_LIBS = -L/usr/lib/i386-linux-gnu -lSDL
 
-DEFINES = -DSYS_LITTLE_ENDIAN
+DEFINES = -DSYS_LITTLE_ENDIAN -DEZX
+
+TARGET = raw.i386
 
 CXX = g++ -m32 -std=c++03
+STRIP = strip
 CXXFLAGS:= -pedantic -O2 -Wall -Wextra
 CXXFLAGS+= $(SDL_CFLAGS) $(DEFINES)
 
@@ -19,8 +22,9 @@ SRCS = bank.cpp file.cpp engine.cpp logic.cpp mixer.cpp resource.cpp sdlstub.cpp
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 
-raw: $(OBJS)
+$(TARGET): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(SDL_LIBS) -lz
+	$(STRIP) -s $(TARGET)
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $*.o
