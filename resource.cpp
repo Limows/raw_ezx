@@ -169,7 +169,7 @@ void Resource::setupPtrs(uint16 ptrId) {
 			ivd1 = _memListParts[part][2];
 			ivd2 = _memListParts[part][3];
 		} else {
-			error("Resource::setupPtrs() ec=0x%X invalid ptrId", 0xF07);
+			error("Resource::setupPtrs() ec=0x%X invalid ptrId", ptrId);
 		}
 		invalidateAll();
 		_memList[ipal].valid = 2;
