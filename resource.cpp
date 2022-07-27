@@ -24,7 +24,7 @@
 
 
 Resource::Resource(Video *vid, const char *dataDir) 
-	: _vid(vid), _dataDir(dataDir) {
+	: _vid(vid), _dataDir(dataDir), _curPtrsId(0), _newPtrsId(0) {
 }
 
 void Resource::readBank(const MemEntry *me, uint8 *dstBuf) {
