@@ -1,3 +1,7 @@
+# Makefile for Motorola EZX platform
+# Environment:
+#  . /opt/toolchains/motoezx/setenv-a1200.sh
+
 SDL_CFLAGS = `/opt/toolchains/motoezx/bin/sdl-config --cflags`
 SDL_LIBS = `/opt/toolchains/motoezx/bin/sdl-config --libs`
 
@@ -11,7 +15,7 @@ CXXFLAGS:= -pedantic -O2 -Wall -mcpu=iwmmxt -mtune=iwmmxt
 CXXFLAGS+= $(SDL_CFLAGS) $(DEFINES)
 
 SRCS = bank.cpp file.cpp engine.cpp logic.cpp mixer.cpp resource.cpp sdlstub.cpp \
-	serializer.cpp sfxplayer.cpp staticres.cpp util.cpp video.cpp main.cpp ezx/EzxEventLoop.cpp
+	serializer.cpp sfxplayer.cpp staticres.cpp util.cpp video.cpp main.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
