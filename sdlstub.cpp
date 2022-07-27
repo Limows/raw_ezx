@@ -27,7 +27,11 @@ struct SDLStub : SystemStub {
 	enum {
 		SCREEN_W = 320,
 		SCREEN_H = 200,
+#ifndef EZX
 		SOUND_SAMPLE_RATE = 22050
+#else
+		SOUND_SAMPLE_RATE = 44100
+#endif
 	};
 
 	struct Scaler {
