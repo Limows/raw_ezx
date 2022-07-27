@@ -1,0 +1,29 @@
+SDL_CFLAGS = `/opt/toolchains/motoezx/bin/sdl-config --cflags`
+SDL_LIBS = `/opt/toolchains/motoezx/bin/sdl-config --libs`
+
+DEFINES = -DSYS_LITTLE_ENDIAN -DEZX
+
+TARGET = raw.ezx
+
+CXX = arm-linux-gnu-g++
+STRIP = arm-linux-gnu-strip
+CXXFLAGS:= -pedantic -O2 -Wall -mcpu=iwmmxt -mtune=iwmmxt
+CXXFLAGS+= $(SDL_CFLAGS) $(DEFINES)
+
+SRCS = bank.cpp file.cpp engine.cpp logic.cpp mixer.cpp resource.cpp sdlstub.cpp \
+	serializer.cpp sfxplayer.cpp staticres.cpp util.cpp video.cpp main.cpp ezx/EzxEventLoop.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+DEPS = $(SRCS:.cpp=.d)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(SDL_LIBS) -lz
+	$(STRIP) -s $(TARGET)
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -MMD -c $< -o $*.o
+
+clean:
+	rm -f *.o *.d
+
+-include $(DEPS)
