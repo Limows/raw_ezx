@@ -28,16 +28,27 @@ Engine::Engine(SystemStub *stub, const char *dataDir, const char *saveDir)
 }
 
 void Engine::run() {
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	_stub->init("Out Of This World");
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	setup();
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	_log.restartAt(0x3E80); // demo starts at 0x3E81
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	while (!_stub->_pi.quit) {
+		fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 		_log.setupScripts();
+		fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 		_log.inp_updatePlayer();
+		fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 		processInput();
+		fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 		_log.runScripts();
+		fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	}
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	finish();
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	_stub->destroy();
 }
 

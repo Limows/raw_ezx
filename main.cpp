@@ -54,9 +54,13 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	g_debugMask = DBG_INFO | DBG_LOGIC | DBG_BANK | DBG_VIDEO | DBG_SER | DBG_SND;
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	SystemStub *stub = SystemStub_SDL_create();
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	Engine *e = new Engine(stub, dataPath, savePath);
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	e->run();
+	fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);
 	delete e;
 	delete stub;
 	return 0;
