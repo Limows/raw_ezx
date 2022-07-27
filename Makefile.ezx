@@ -1,24 +1,37 @@
 # Makefile for Motorola EZX platform
-# Environment:
+#
+# Development Environment:
 #  . /opt/toolchains/motoezx/setenv-a1200.sh
 
+TARGET     = raw.ezx
+APPDIR     = ANOTHER
+
+CXX        = arm-linux-gnu-g++
+STRIP      = arm-linux-gnu-strip
 SDL_CFLAGS = `/opt/toolchains/motoezx/bin/sdl-config --cflags`
-SDL_LIBS = `/opt/toolchains/motoezx/bin/sdl-config --libs`
+SDL_LIBS   = `/opt/toolchains/motoezx/bin/sdl-config --libs`
+DEFINES    = -DSYS_LITTLE_ENDIAN -DEZX
+CXXFLAGS  := -pedantic -O2 -Wall -mcpu=iwmmxt -mtune=iwmmxt
+CXXFLAGS  += $(SDL_CFLAGS) $(DEFINES)
+TAR        = tar --numeric-owner --owner=2000 --group=233 -cvf
+GZIP       = gzip -9f
 
-DEFINES = -DSYS_LITTLE_ENDIAN -DEZX
+SRCS       = bank.cpp \
+             file.cpp \
+             engine.cpp \
+             logic.cpp \
+             mixer.cpp \
+             resource.cpp \
+             sdlstub.cpp \
+             serializer.cpp \
+             sfxplayer.cpp \
+             staticres.cpp \
+             util.cpp \
+             video.cpp \
+             main.cpp
 
-TARGET = raw.ezx
-
-CXX = arm-linux-gnu-g++
-STRIP = arm-linux-gnu-strip
-CXXFLAGS:= -pedantic -O2 -Wall -mcpu=iwmmxt -mtune=iwmmxt
-CXXFLAGS+= $(SDL_CFLAGS) $(DEFINES)
-
-SRCS = bank.cpp file.cpp engine.cpp logic.cpp mixer.cpp resource.cpp sdlstub.cpp \
-	serializer.cpp sfxplayer.cpp staticres.cpp util.cpp video.cpp main.cpp
-
-OBJS = $(SRCS:.cpp=.o)
-DEPS = $(SRCS:.cpp=.d)
+OBJS       = $(SRCS:.cpp=.o)
+DEPS       = $(SRCS:.cpp=.d)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(SDL_LIBS) -lz
@@ -29,5 +42,15 @@ $(TARGET): $(OBJS)
 
 clean:
 	rm -f *.o *.d
+
+mpkg: $(TARGET)
+	-cp $(TARGET) $(APPDIR)
+	-cp ezx/ibig.png $(APPDIR)
+	-cp ezx/ismall.png $(APPDIR)
+	-cp ezx/run.sh $(APPDIR)
+	-cp ezx/raw.desktop $(APPDIR)/ANOTHER.desktop
+	$(TAR) $(APPDIR).uncompressed $(APPDIR)
+	$(GZIP) $(APPDIR).uncompressed
+	-mv $(APPDIR).uncompressed.gz Another_World_Raw_EZX.mpkg
 
 -include $(DEPS)
