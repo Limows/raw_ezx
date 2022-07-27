@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name = Another World
+Version = 0.1.1
+Description = RAW is opensource version of Another World game interpreter
+Comment = Ported by EXL and Limows
+Vendor = Limows
+Exec = run
+BigIcon = ibig.png
+Icon = ismall.png
+Type = Application
+Category = Games
+Shared = 2
+Name[en_GB] = Another World
+Name[en_US] = Out of This World

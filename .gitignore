@@ -1,0 +1,24 @@
+# Build results
+*.o
+*.ezx
+*.dge
+*.exe
+*.elf
+
+# Libraries
+*.dll
+
+# Packages
+*.pkg
+*.mpkg
+*.tar.gz
+*.deb
+*.rpm
+*.hpkg
+
+# Data files.
+BANK*
+MEMLIST.BIN
+
+# Save files
+*.DAT
