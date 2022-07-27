@@ -7,7 +7,8 @@
 SDL_CFLAGS = `sdl-config --cflags`
 SDL_LIBS = -L/usr/lib/i386-linux-gnu -lSDL
 
-DEFINES = -DSYS_LITTLE_ENDIAN -DEZX
+DEFINES := -DSYS_LITTLE_ENDIAN
+# DEFINES += -DEZX
 
 TARGET = raw.i386
 
