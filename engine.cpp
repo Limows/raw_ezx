@@ -21,6 +21,9 @@
 #include "serializer.h"
 #include "systemstub.h"
 
+#ifdef EZX
+#include "ezx/EzxEventLoop.h"
+#endif
 
 Engine::Engine(SystemStub *stub, const char *dataDir, const char *saveDir)
 	: _stub(stub), _log(&_mix, &_res, &_ply, &_vid, _stub), _mix(_stub), _res(&_vid, dataDir), 
@@ -47,6 +50,7 @@ void Engine::setup() {
 	_res.readEntries();
 	_log.init();
 	_mix.init();
+	g_Mixer = &_mix;
 	_ply.init();
 }
 

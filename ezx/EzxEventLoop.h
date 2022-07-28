@@ -8,6 +8,10 @@
 
 #include <SDL/SDL.h>
 
+#include "../mixer.h"
+
 extern int EZX_SDL_PollEvent(SDL_Event *event);
+
+extern Mixer *g_Mixer;
 
 #endif // EZXEVENTLOOP_H

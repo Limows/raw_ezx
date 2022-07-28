@@ -5,13 +5,16 @@
 
 #include "EzxEventLoop.h"
 
+Mixer *g_Mixer = NULL;
+
 int EZX_SDL_PollEvent(SDL_Event *event) {
 	int ret = SDL_PollEvent(event);
 	if (!ret)
 		return 0;
 	if (event->type == SDL_ACTIVEEVENT)
 		if (event->active.state == SDL_APPINPUTFOCUS && !event->active.gain) {
-			SDL_PauseAudio(1);
+			if (g_Mixer)
+				g_Mixer->free();
 			for (;;) {
 				ret = SDL_WaitEvent(event);
 				if (!ret)
@@ -21,7 +24,8 @@ int EZX_SDL_PollEvent(SDL_Event *event) {
 				if (event->type != SDL_ACTIVEEVENT)
 					continue;
 				if (event->active.state == SDL_APPINPUTFOCUS && event->active.gain) {
-					SDL_PauseAudio(0);
+					if (g_Mixer)
+						g_Mixer->init();
 					return 1;
 				}
 			}
