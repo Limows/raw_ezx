@@ -43,7 +43,7 @@ public:
 
 		QLabel *labelSign = new QLabel(tr("Limows & EXL, 2022"), this);
 
-		QBoxLayout *layout = new QVBoxLayout(this, 1, 5);
+		QBoxLayout *layout = new QVBoxLayout(this, 5, 5);
 		layout->addWidget(labelBanner, 0, Qt::AlignHCenter);
 		layout->addWidget(checkBoxSound);
 		layout->addWidget(checkBoxStretch);
