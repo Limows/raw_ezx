@@ -3,7 +3,12 @@ Another World (Out of This World) for Motorola
 
 Port of the Another World (Out of This World) game for Motorola Linux phones on EZX and MotoMAGX platform using the [raw](https://github.com/cyxx/rawgl/tree/raw) engine by Gregory Montoir.
 
-<!-- TODO: Put photos or screenshot here. -->
+![Motorola EZX Screenshot 1](image/EZX_Screenshot_3.png)
+![Motorola EZX Screenshot 2](image/EZX_Screenshot_4.png)
+![Motorola EZX Screenshot 3](image/EZX_Screenshot_5.png)
+![Motorola EZX Screenshot 4](image/EZX_Screenshot_6.png)
+![Motorola EZX Screenshot 5](image/EZX_Screenshot_8.png)
+![Motorola EZX Screenshot 6](image/EZX_Screenshot_9.png)
 
 ## EZX Build Recipe
 
