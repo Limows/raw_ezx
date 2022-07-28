@@ -50,6 +50,8 @@ TODO: Soon.
 * Mod Key and Volume "-" or Backward Key (ROKR E6) -- Cheat loading game.
 * Mod Key and Call Key -- Enable or Disable audio.
 
+Mod Key is Voice Key (below Volume Keys) on Motorola MING A1200 and Operator Key (below Hangup Key) on Motorola ROKR E6.
+
 ## MotoMAGX Control Keys
 
 * TODO: Soon.
