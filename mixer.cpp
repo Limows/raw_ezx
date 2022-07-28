@@ -20,6 +20,7 @@
 #include "serializer.h"
 #include "systemstub.h"
 
+#include <cstdlib>
 
 static int8 addclamp(int a, int b) {
 	int add = a + b;
@@ -34,88 +35,103 @@ static int8 addclamp(int a, int b) {
 
 Mixer::Mixer(SystemStub *stub) 
 	: _stub(stub) {
+	_disableAudio = getenv("RAW_NO_SOUND");
 }
 
 void Mixer::init() {
-	memset(_channels, 0, sizeof(_channels));
-	_mutex = _stub->createMutex();
-	_stub->startAudio(Mixer::mixCallback, this);
+	if (!_disableAudio) {
+		memset(_channels, 0, sizeof(_channels));
+		_mutex = _stub->createMutex();
+		_stub->startAudio(Mixer::mixCallback, this);
+	}
 }
 
 void Mixer::free() {
-	stopAll();
-	_stub->stopAudio();
-	_stub->destroyMutex(_mutex);
+	if (!_disableAudio) {
+		stopAll();
+		_stub->stopAudio();
+		_stub->destroyMutex(_mutex);
+	}
 }
 
 void Mixer::playChannel(uint8 channel, const MixerChunk *mc, uint16 freq, uint8 volume) {
-	debug(DBG_SND, "Mixer::playChannel(%d, %d, %d)", channel, freq, volume);
-	assert(channel < NUM_CHANNELS);
-	MutexStack(_stub, _mutex);
-	MixerChannel *ch = &_channels[channel];
-	ch->active = true;
-	ch->volume = volume;
-	ch->chunk = *mc;
-	ch->chunkPos = 0;
-	ch->chunkInc = (freq << 8) / _stub->getOutputSampleRate();
+	if (!_disableAudio) {
+		debug(DBG_SND, "Mixer::playChannel(%d, %d, %d)", channel, freq, volume);
+		assert(channel < NUM_CHANNELS);
+		MutexStack(_stub, _mutex);
+		MixerChannel *ch = &_channels[channel];
+		ch->active = true;
+		ch->volume = volume;
+		ch->chunk = *mc;
+		ch->chunkPos = 0;
+		ch->chunkInc = (freq << 8) / _stub->getOutputSampleRate();
+	}
 }
 
 void Mixer::stopChannel(uint8 channel) {
-	debug(DBG_SND, "Mixer::stopChannel(%d)", channel);
-	assert(channel < NUM_CHANNELS);
-	MutexStack(_stub, _mutex);	
-	_channels[channel].active = false;
+	if (!_disableAudio) {
+		debug(DBG_SND, "Mixer::stopChannel(%d)", channel);
+		assert(channel < NUM_CHANNELS);
+		MutexStack(_stub, _mutex);
+		_channels[channel].active = false;
+	}
 }
 
 void Mixer::setChannelVolume(uint8 channel, uint8 volume) {
-	debug(DBG_SND, "Mixer::setChannelVolume(%d, %d)", channel, volume);
-	assert(channel < NUM_CHANNELS);
-	MutexStack(_stub, _mutex);
-	_channels[channel].volume = volume;
+	if (!_disableAudio) {
+		debug(DBG_SND, "Mixer::setChannelVolume(%d, %d)", channel, volume);
+		assert(channel < NUM_CHANNELS);
+		MutexStack(_stub, _mutex);
+		_channels[channel].volume = volume;
+	}
 }
 
 void Mixer::stopAll() {
-	debug(DBG_SND, "Mixer::stopAll()");
-	MutexStack(_stub, _mutex);
-	for (uint8 i = 0; i < NUM_CHANNELS; ++i) {
-		_channels[i].active = false;		
+	if (!_disableAudio) {
+		debug(DBG_SND, "Mixer::stopAll()");
+		MutexStack(_stub, _mutex);
+		for (uint8 i = 0; i < NUM_CHANNELS; ++i) {
+			_channels[i].active = false;
+		}
 	}
 }
 
 void Mixer::mix(int8 *buf, int len) {
-	MutexStack(_stub, _mutex);
-	memset(buf, 0, len);
-	for (uint8 i = 0; i < NUM_CHANNELS; ++i) {
-		MixerChannel *ch = &_channels[i];
-		if (ch->active) {
-			int8 *pBuf = buf;
-			for (int j = 0; j < len; ++j, ++pBuf) {
-				uint16 p1, p2;
-				uint16 ilc = (ch->chunkPos & 0xFF);
-				p1 = ch->chunkPos >> 8;
-				ch->chunkPos += ch->chunkInc;
-				if (ch->chunk.loopLen != 0) {
-					if (p1 == ch->chunk.loopPos + ch->chunk.loopLen - 1) {
-						debug(DBG_SND, "Looping sample on channel %d", i);
-						ch->chunkPos = p2 = ch->chunk.loopPos;
+	if (!_disableAudio) {
+		MutexStack(_stub, _mutex);
+		memset(buf, 0, len);
+		for (uint8 i = 0; i < NUM_CHANNELS; ++i) {
+			MixerChannel *ch = &_channels[i];
+			if (ch->active) {
+				int8 *pBuf = buf;
+				for (int j = 0; j < len; ++j, ++pBuf) {
+					uint16 p1, p2;
+					uint16 ilc = (ch->chunkPos & 0xFF);
+					p1 = ch->chunkPos >> 8;
+					ch->chunkPos += ch->chunkInc;
+					if (ch->chunk.loopLen != 0) {
+						if (p1 == ch->chunk.loopPos + ch->chunk.loopLen - 1) {
+							debug(DBG_SND, "Looping sample on channel %d", i);
+							ch->chunkPos = p2 = ch->chunk.loopPos;
+						} else {
+							p2 = p1 + 1;
+						}
 					} else {
-						p2 = p1 + 1;
+						if (p1 == ch->chunk.len - 1) {
+							debug(DBG_SND, "Stopping sample on channel %d", i);
+							ch->active = false;
+							break;
+						} else {
+							p2 = p1 + 1;
+						}
 					}
-				} else {
-					if (p1 == ch->chunk.len - 1) {
-						debug(DBG_SND, "Stopping sample on channel %d", i);
-						ch->active = false;
-						break;
-					} else {
-						p2 = p1 + 1;
-					}
+					// interpolate
+					int8 b1 = *(int8 *)(ch->chunk.data + p1);
+					int8 b2 = *(int8 *)(ch->chunk.data + p2);
+					int8 b = (int8)((b1 * (0xFF - ilc) + b2 * ilc) >> 8);
+					// set volume and clamp
+					*pBuf = addclamp(*pBuf, (int)b * ch->volume / 0x40);
 				}
-				// interpolate
-				int8 b1 = *(int8 *)(ch->chunk.data + p1);
-				int8 b2 = *(int8 *)(ch->chunk.data + p2);
-				int8 b = (int8)((b1 * (0xFF - ilc) + b2 * ilc) >> 8);
-				// set volume and clamp
-				*pBuf = addclamp(*pBuf, (int)b * ch->volume / 0x40);
 			}
 		}
 	}
@@ -126,21 +142,23 @@ void Mixer::mixCallback(void *param, uint8 *buf, int len) {
 }
 
 void Mixer::saveOrLoad(Serializer &ser) {
-	_stub->lockMutex(_mutex);
-	for (int i = 0; i < NUM_CHANNELS; ++i) {
-		MixerChannel *ch = &_channels[i];
-		Serializer::Entry entries[] = {
-			SE_INT(&ch->active, Serializer::SES_BOOL, VER(2)),
-			SE_INT(&ch->volume, Serializer::SES_INT8, VER(2)),
-			SE_INT(&ch->chunkPos, Serializer::SES_INT32, VER(2)),
-			SE_INT(&ch->chunkInc, Serializer::SES_INT32, VER(2)),
-			SE_PTR(&ch->chunk.data, VER(2)),
-			SE_INT(&ch->chunk.len, Serializer::SES_INT16, VER(2)),
-			SE_INT(&ch->chunk.loopPos, Serializer::SES_INT16, VER(2)),
-			SE_INT(&ch->chunk.loopLen, Serializer::SES_INT16, VER(2)),
-			SE_END()
-		};
-		ser.saveOrLoadEntries(entries);
+	if (!_disableAudio) {
+		_stub->lockMutex(_mutex);
+		for (int i = 0; i < NUM_CHANNELS; ++i) {
+			MixerChannel *ch = &_channels[i];
+			Serializer::Entry entries[] = {
+				SE_INT(&ch->active, Serializer::SES_BOOL, VER(2)),
+				SE_INT(&ch->volume, Serializer::SES_INT8, VER(2)),
+				SE_INT(&ch->chunkPos, Serializer::SES_INT32, VER(2)),
+				SE_INT(&ch->chunkInc, Serializer::SES_INT32, VER(2)),
+				SE_PTR(&ch->chunk.data, VER(2)),
+				SE_INT(&ch->chunk.len, Serializer::SES_INT16, VER(2)),
+				SE_INT(&ch->chunk.loopPos, Serializer::SES_INT16, VER(2)),
+				SE_INT(&ch->chunk.loopLen, Serializer::SES_INT16, VER(2)),
+				SE_END()
+			};
+			ser.saveOrLoadEntries(entries);
+		}
+		_stub->unlockMutex(_mutex);
 	}
-	_stub->unlockMutex(_mutex);
-};
+}

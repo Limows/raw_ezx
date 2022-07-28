@@ -20,6 +20,8 @@
 #include "systemstub.h"
 #include "util.h"
 
+#include <cstdlib>
+
 #ifdef EZX
 #include "ezx/EzxEventLoop.h"
 #define SDL_PollEvent EZX_SDL_PollEvent
@@ -52,6 +54,7 @@ struct SDLStub : SystemStub {
 	SDL_Surface *_sclscreen;
 	bool _fullscreen;
 	uint8 _scaler;
+	uint8 _SCREEN_H_FIXED;
 	bool _stretch240;
 	bool _disableAudio;
 	uint16 _pal[16];
@@ -96,12 +99,14 @@ SystemStub *SystemStub_SDL_create() {
 }
 
 void SDLStub::init(const char *title) {
+	_stretch240 = !getenv("RAW_NO_STRETCH");
+	_SCREEN_H_FIXED = getenv("RAW_NO_STRETCH") ? 200 : 240;
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_WM_SetCaption(title, NULL);
 	memset(&_pi, 0, sizeof(_pi));
-	_offscreen = (uint8 *)malloc(SCREEN_W * SCREEN_H * 2);
+	_offscreen = (uint8 *)malloc(SCREEN_W * _SCREEN_H_FIXED * 2);
 	if (!_offscreen) {
 		error("Unable to allocate offscreen buffer");
 	}
@@ -111,7 +116,6 @@ void SDLStub::init(const char *title) {
 #else
 	_scaler = 1;
 #endif
-	_stretch240 = true;
 	_disableAudio = false;
 	prepareGfxMode();
 }
@@ -147,7 +151,7 @@ void SDLStub::copyRect(uint16 x, uint16 y, uint16 w, uint16 h, const uint8 *buf,
 		buf += pitch;
 	}
 	SDL_LockSurface(_sclscreen);
-	(this->*_scalers[_scaler].proc)((uint16 *)_sclscreen->pixels, _sclscreen->pitch, (uint16 *)_offscreen, SCREEN_W, SCREEN_W, SCREEN_H);
+	(this->*_scalers[_scaler].proc)((uint16 *)_sclscreen->pixels, _sclscreen->pitch, (uint16 *)_offscreen, SCREEN_W, SCREEN_W, _SCREEN_H_FIXED);
 	SDL_UnlockSurface(_sclscreen);
 	if (_stretch240) {
 		SDL_Rect dest;
@@ -350,7 +354,7 @@ void SDLStub::unlockMutex(void *mutex) {
 
 void SDLStub::prepareGfxMode() {
 	int w = SCREEN_W * _scalers[_scaler].factor;
-	int h = SCREEN_H * _scalers[_scaler].factor;
+	int h = _SCREEN_H_FIXED * _scalers[_scaler].factor;
 #ifdef EZX
 	_screen = SDL_SetVideoMode(w, h, 16, SDL_FULLSCREEN | SDL_HWSURFACE);
 #else

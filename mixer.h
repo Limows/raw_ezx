@@ -47,6 +47,7 @@ struct Mixer {
 	void *_mutex;
 	SystemStub *_stub;
 	MixerChannel _channels[NUM_CHANNELS];
+	bool _disableAudio;
 
 	Mixer(SystemStub *stub);
 	void init();
