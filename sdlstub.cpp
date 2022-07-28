@@ -20,6 +20,10 @@
 #include "systemstub.h"
 #include "util.h"
 
+#ifdef EZX
+#include "ezx/EzxEventLoop.h"
+#define SDL_PollEvent EZX_SDL_PollEvent
+#endif
 
 struct SDLStub : SystemStub {
 	typedef void (SDLStub::*ScaleProc)(uint16 *dst, uint16 dstPitch, const uint16 *src, uint16 srcPitch, uint16 w, uint16 h);

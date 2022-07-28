@@ -16,7 +16,8 @@ CXXFLAGS  += $(SDL_CFLAGS) $(DEFINES)
 TAR        = tar --numeric-owner --owner=2000 --group=233 -cvf
 GZIP       = gzip -9f
 
-SRCS       = bank.cpp \
+SRCS       = ezx/EzxEventLoop.cpp \
+             bank.cpp \
              file.cpp \
              engine.cpp \
              logic.cpp \
