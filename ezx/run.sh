@@ -15,4 +15,4 @@ export HOME=$CURRENT_PATH
 sleep 1
 
 cd $CURRENT_PATH
-exec $CURRENT_PATH/raw.ezx
+exec $CURRENT_PATH/RawGameLauncher

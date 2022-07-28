@@ -42,12 +42,14 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $*.o
 
 clean:
-	rm -f *.o *.d
+	rm -f *.o *.d *.mpkg
 
 mpkg: $(TARGET)
 	-cp $(TARGET) $(APPDIR)
+	-cp ezx/RawGameLauncher $(APPDIR)
 	-cp ezx/ibig.png $(APPDIR)
 	-cp ezx/ismall.png $(APPDIR)
+	-cp ezx/aw_banner.jpg $(APPDIR)
 	-cp ezx/run.sh $(APPDIR)
 	-cp ezx/raw.desktop $(APPDIR)/ANOTHER.desktop
 	$(TAR) $(APPDIR).uncompressed $(APPDIR)
