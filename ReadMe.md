@@ -26,9 +26,9 @@ cd ..
 . /opt/toolchains/motoezx/setenv-a1200.sh
 make -f Makefile.ezx clean
 make -f Makefile.ezx
-make -f Makefile.ezx mpkg
+make -f Makefile.ezx dist
 
-/usr/bin/curl -T Another_World_Raw_EZX.mpkg ftp://root:@192.168.16.2//mmc/mmca1/
+/usr/bin/curl -T Another_World_Raw_EZX* ftp://root:@192.168.16.2//mmc/mmca1/
 ```
 
 ## MotoMAGX Build Recipe
