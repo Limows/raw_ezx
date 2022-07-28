@@ -5,6 +5,33 @@ Port of the Another World (Out of This World) game for Motorola Linux phones on 
 
 <!-- TODO: Put photos or screenshot here. -->
 
+## EZX Build Recipe
+
+```
+mkdir ANOTHER
+cp ~/Downloads/ANOTHER/BANK* ANOTHER/
+cp ~/Downloads/ANOTHER/MEMLIST.BIN ANOTHER/
+
+cd ezx/
+. /opt/toolchains/motoezx/setenv-a1200-devezx.sh
+make clean
+make
+
+cd ..
+. /opt/toolchains/motoezx/setenv-a1200.sh
+make -f Makefile.ezx clean
+make -f Makefile.ezx
+make -f Makefile.ezx mpkg
+
+/usr/bin/curl -T Another_World_Raw_EZX.mpkg ftp://root:@192.168.16.2//mmc/mmca1/
+```
+
+## MotoMAGX Build Recipe
+
+```
+TODO: Soon.
+```
+
 ## EZX Control Keys
 
 * D-Pad or Joystick -- Movement.
@@ -20,9 +47,9 @@ Port of the Another World (Out of This World) game for Motorola Linux phones on 
 
 ## MotoMAGX Control Keys
 
-* TODO: SOON
+* TODO: Soon.
 
 ## Credits
 
-* Gregory Montoir (raw engine)
-* Limows and EZX (EZX and MotoMAGX port)
+* Gregory Montoir (raw engine).
+* Limows and EZX (EZX and MotoMAGX port).
