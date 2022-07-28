@@ -5,6 +5,7 @@
 
 TARGET     = raw.ezx
 APPDIR     = ANOTHER
+VERSION    = 0.1.1
 
 CXX        = arm-linux-gnu-g++
 STRIP      = arm-linux-gnu-strip
@@ -54,7 +55,7 @@ mpkg: $(TARGET)
 	-cp ezx/raw.desktop $(APPDIR)/ANOTHER.desktop
 	$(TAR) $(APPDIR).uncompressed --numeric-owner --owner=2000 --group=233 $(APPDIR)
 	$(GZIP) $(APPDIR).uncompressed
-	-mv $(APPDIR).uncompressed.gz Another_World_Raw_EZX.mpkg
+	-mv $(APPDIR).uncompressed.gz Another_World_Raw_EZX_$(VERSION).mpkg
 
 pkg: $(TARGET)
 	-cp $(TARGET) $(APPDIR)
@@ -66,7 +67,7 @@ pkg: $(TARGET)
 	-cp ezx/raw.desktop $(APPDIR)/ANOTHER.desktop
 	$(TAR) $(APPDIR).uncompressed $(APPDIR)
 	$(GZIP) $(APPDIR).uncompressed
-	-mv $(APPDIR).uncompressed.gz Another_World_Raw_EZX.pkg
+	-mv $(APPDIR).uncompressed.gz Another_World_Raw_EZX_$(VERSION).pkg
 
 dist: pkg mpkg
 
