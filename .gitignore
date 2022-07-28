@@ -2,11 +2,8 @@
 *.o
 *.d
 *.moc
-raw
-raw.x86
-raw.ezx
-raw.magx
-RawGameLauncher
+raw*
+Raw*
 
 # Libraries
 *.dll
@@ -25,3 +22,4 @@ MEMLIST.BIN
 
 # Save files
 *.s0*
+*.DAT
