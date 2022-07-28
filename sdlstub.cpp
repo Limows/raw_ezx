@@ -177,7 +177,9 @@ void SDLStub::processEvents() {
 			case SDLK_DOWN:
 				_pi.dirMask &= ~PlayerInput::DIR_DOWN;
 				break;
+#ifndef EZX
 			case SDLK_SPACE:
+#endif
 			case SDLK_RETURN:
 			case SDLK_PLUS:
 				_pi.button = false;
@@ -258,11 +260,16 @@ void SDLStub::processEvents() {
 			case SDLK_DOWN:
 				_pi.dirMask |= PlayerInput::DIR_DOWN;
 				break;
+#ifndef EZX
+			case SDLK_SPACE:
+#endif
 			case SDLK_RETURN:
 			case SDLK_PLUS:
 				_pi.button = true;
 				break;
+#ifdef EZX
 			case SDLK_SPACE:
+#endif
 			case SDLK_r:
 				_pi.code = true;
 				break;
