@@ -1,7 +1,7 @@
 Another World (Out of This World) for Motorola
 ==============================================
 
-Port of the Another World (Out of This World) game for Motorola Linux phones on EZX and MotoMAGX platform using the [raw](https://github.com/cyxx/rawgl/tree/raw) engine by Gregory Montoir.
+Port of the Another World (Out of This World) game to Motorola Linux phones on EZX and MotoMAGX platform using the [raw](https://github.com/cyxx/rawgl/tree/raw) engine by Gregory Montoir.
 
 ![Motorola EZX Screenshot 1](image/EZX_Screenshot_3.png)
 ![Motorola EZX Screenshot 2](image/EZX_Screenshot_4.png)
@@ -59,4 +59,4 @@ Mod Key is Voice Key (below Volume Keys) on Motorola MING A1200 and Operator Key
 ## Credits
 
 * Gregory Montoir (raw engine).
-* Limows and EZX (EZX and MotoMAGX port).
+* Limows and EXL (EZX and MotoMAGX port).
