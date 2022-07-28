@@ -1,10 +1,12 @@
 # Build results
 *.o
 *.d
+*.moc
 raw
 raw.x86
 raw.ezx
 raw.magx
+RawGameLauncher
 
 # Libraries
 *.dll
