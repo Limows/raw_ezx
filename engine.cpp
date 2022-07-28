@@ -50,7 +50,9 @@ void Engine::setup() {
 	_res.readEntries();
 	_log.init();
 	_mix.init();
+#ifdef EZX
 	g_Mixer = &_mix;
+#endif
 	_ply.init();
 }
 
