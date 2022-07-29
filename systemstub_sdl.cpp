@@ -47,6 +47,8 @@ struct SystemStub_SDL : SystemStub {
 	virtual uint32_t getTimeStamp();
 
 	void setAspectRatio(int w, int h);
+
+	void Stretch240(void);
 };
 
 const float SystemStub_SDL::kAspectRatio = 16.f / 10.f;
@@ -201,7 +203,10 @@ void SystemStub_SDL::setScreenPixels555(const uint16_t *data, int w, int h) {
 
 	SDL_UnlockSurface(_sclscreen);
 
-	SDL_BlitSurface(_sclscreen, NULL, _surface, NULL);
+	SDL_Rect dest;
+	SDL_BlitSurface(_sclscreen, NULL, _surface, &dest);
+	Stretch240();
+
 	SDL_UpdateRect(_surface, 0, 0, 0, 0);
 }
 
@@ -333,6 +338,23 @@ void SystemStub_SDL::setAspectRatio(int w, int h) {
 		_aspectRatio[3] = 1.f - inset;
 		return;
 	}
+}
+
+void SystemStub_SDL::Stretch240(void) {
+	SDL_Rect src;
+	SDL_Rect dest;
+
+	src.x = 0;
+	src.y = 0;
+	src.w = 320;
+	src.h = 200;
+
+	dest.x = 0;
+	dest.y = 0;
+	dest.w = 320;
+	dest.h = 240;
+
+	SDL_SoftStretch(_sclscreen, &src, _surface, &dest);
 }
 
 SystemStub *SystemStub_SDL_create() {
