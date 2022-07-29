@@ -186,12 +186,19 @@ void SystemStub_SDL::setScreenPixels555(const uint16_t *data, int w, int h) {
 	uint16_t dstPitch = _sclscreen->pitch;
 	uint16_t srcPitch = w;
 
+	// Convert RGB555 to RGB666
+	#define RGB555_TO_RGB565(c)	(c = ( ((c & 0x7FE0) << 1) | (c & 0x1F)))
+	uint16_t *src = (uint16_t *) data;
+	for (int i = 0; i < h * w; ++i)
+		src[i] = RGB555_TO_RGB565(src[i]);
+
 	dstPitch >>= 1;
 	while (h--) {
-		memcpy(dst, data, w * 2);
+		memcpy(dst, src, w * 2);
 		dst += dstPitch;
-		data += dstPitch;
+		src += dstPitch;
 	}
+
 	SDL_UnlockSurface(_sclscreen);
 
 	SDL_BlitSurface(_sclscreen, NULL, _surface, NULL);
