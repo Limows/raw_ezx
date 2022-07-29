@@ -99,8 +99,15 @@ SystemStub *SystemStub_SDL_create() {
 }
 
 void SDLStub::init(const char *title) {
+#ifdef EZX
 	_stretch240 = !getenv("RAW_NO_STRETCH");
 	_SCREEN_H_FIXED = getenv("RAW_NO_STRETCH") ? 200 : 240;
+	_scaler = 0;
+#else
+	_stretch240 = false;
+	_SCREEN_H_FIXED = SCREEN_H;
+	_scaler = 1;
+#endif
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_ShowCursor(SDL_DISABLE);
@@ -111,11 +118,6 @@ void SDLStub::init(const char *title) {
 		error("Unable to allocate offscreen buffer");
 	}
 	_fullscreen = false;
-#ifdef EZX
-	_scaler = 0;
-#else
-	_scaler = 1;
-#endif
 	_disableAudio = false;
 	prepareGfxMode();
 }
