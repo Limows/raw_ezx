@@ -6,7 +6,7 @@
 
 #include <SDL.h>
 #define MIX_INIT_FLUIDSYNTH MIX_INIT_MID // renamed with SDL2_mixer >= 2.0.2
-#include <SDL_mixer.h>
+#include <SDL/SDL_mixer.h>
 #include <map>
 #include "aifcplayer.h"
 #include "mixer.h"
@@ -188,7 +188,7 @@ static const uint8_t *loadWav(const uint8_t *data, int &freq, int &len, bool &bi
 struct Mixer_impl {
 
 	static const int kMixFreq = 44100;
-	static const SDL_AudioFormat kMixFormat = AUDIO_S16SYS;
+	static const int kMixFormat = AUDIO_S16SYS;
 	static const int kMixSoundChannels = 2;
 	static const int kMixBufSize = 4096;
 	static const int kMixChannels = 4;
