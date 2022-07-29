@@ -5,7 +5,9 @@
  */
 
 #include <SDL.h>
+#ifndef EZX
 #define MIX_INIT_FLUIDSYNTH MIX_INIT_MID // renamed with SDL2_mixer >= 2.0.2
+#endif
 #include <SDL/SDL_mixer.h>
 #include <map>
 #include "aifcplayer.h"
@@ -59,7 +61,18 @@ struct MixerChannel {
 		_loopLen = loop ? len : 0;
 		_loopPos = 0;
 		_volume = volume;
-		_mixWav = bits16 ? (stereo ? &MixerChannel::mixWav<16, true> : &MixerChannel::mixWav<16, false>) : (stereo ? &MixerChannel::mixWav<8, true> : &MixerChannel::mixWav<8, false>);
+		_mixWav = 0;
+		if (bits16)
+			if (stereo)
+				_mixWav = &MixerChannel::mixWav<16, true>;
+			else
+				_mixWav = &MixerChannel::mixWav<16, false>;
+		else
+			if (stereo)
+				_mixWav = &MixerChannel::mixWav<8, true>;
+			else
+				_mixWav = &MixerChannel::mixWav<8, false>;
+//		_mixWav = bits16 ? (stereo ? &MixerChannel::mixWav<16, true> : &MixerChannel::mixWav<16, false>) : (stereo ? &MixerChannel::mixWav<8, true> : &MixerChannel::mixWav<8, false>);
 	}
 	void mixRaw(int16_t &sample) {
 		if (_data) {
